@@ -6,3 +6,6 @@ operations that can be performed in the database, and also manages database, and
 to communicate with database, without having actual database in its own application.
 Running instruction: Install apk for contentprovider first and then install the apk for contentresolver to successfully run
 the application 
+
+##Image Displayer
+This is a small application that works as a gallery. As a part of this project, I was required to implement various android concepts: Dynamic Fragments, Grid-Display, Menu Items, use of Asyntask(multi-threading).
