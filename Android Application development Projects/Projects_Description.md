@@ -8,4 +8,4 @@ Running instruction: Install apk for contentprovider first and then install the 
 the application 
 
 ##Image Displayer
-This is a small application that works as a gallery. As a part of this project, I was required to implement various android concepts: Dynamic Fragments, Grid-Display, Menu Items, use of Asyntask(multi-threading).
+This is a small application that works as a gallery. As a part of this project, I was required to implement various android concepts: Dynamic Fragments, Grid-Display, Menu Items, use of Asyntask(multi-threading). To run the application, install the ImageDisplayer.apk and then open the application.
