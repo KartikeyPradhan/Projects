@@ -1,0 +1,169 @@
+@CHARSET "ISO-8859-1";
+#text
+{
+width:100px;
+}
+
+/*CSS for dropdown box*/
+select
+{
+width: 300px;
+height: 29px;
+border-radius: 3px;
+border: 1px solid #CCC;
+font-weight: 200;
+font-size: 15px;
+font-family: Verdana;
+box-shadow: 1px 1px 5px #CCC;
+}
+select: hover
+{
+width: 300px;
+height: 29px;
+border-radius: 3px;
+border: 1px solid #CCC;
+font-weight: 200;
+font-size: 15px;
+font-family: Verdana;
+box-shadow: 1px 1px 5px #CCC;
+}
+
+/*CSS for input textbox and password*/
+
+input[type='text'], input[type='password']
+{
+width: 300px;
+height: 20px;
+border-radius: 3px;
+border: 1px solid #CCC;
+padding: 8px;
+padding-left: 10px;
+font-weight: 200;
+font-size: 15px;
+font-family: Verdana;
+box-shadow: 1px 1px 5px #CCC;
+}
+
+/* input[type='text']:hover, input[type='password']:hover
+{
+width: 400px;
+height: 29px;
+border-radius: 3px;
+border: 1px solid #aaa;
+padding: 8px;
+font-weight: 200;
+font-size: 15px;
+font-family: Verdana;
+box-shadow: 1px 1px 5px #CCC;
+} */
+
+/*CSS for textarea*/
+
+/* textarea
+{
+width: 200px;
+height: 90px;
+border-radius: 3px;
+border: 1px solid #CCC;
+padding: 8px;
+font-weight: 200;
+font-size: 15px;
+font-family: Verdana;
+box-shadow: 1px 1px 5px #CCC;
+}
+textarea:hover
+{
+width: 200px;
+height: 90px;
+border-radius: 3px;
+border: 1px solid #aaa;
+padding: 8px;
+font-weight: 200;
+font-size: 15px;
+font-family: Verdana;
+box-shadow: 1px 1px 5px #CCC;
+} */
+
+/*input type for submit button*/
+
+input[type='button']
+{
+width: 150px;
+height: 34px;
+border: 2px solid white;
+background-color:#CCC;
+}
+input[type='submit']:hover
+{
+width: 150px;
+height: 34px;
+border: 2px solid white;
+background-color:#333333;
+color:#fff;
+}
+
+#mask{
+    z-index: 10;
+    position: fixed;
+    display: none; /* removes the element completely from the document, it doesn't take up any space. */
+    /* visibility: hidden; -- hides the element, but it still takes up space in the layout. */
+   /*  background: transparent;
+    background-color: #aaa; */
+    background: rgba(255,255,255,0.5);
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+
+}
+
+#pop {
+   z-index:502;
+   position:absolute;
+ /*   border: 1px solid #111111; */
+/* CSS by GenerateCSS.com */
+-webkit-box-shadow: inset 0px 0px 41px 41px #ffffff;
+box-shadow: inset 0px 0px 41px 41px #ffffff;
+/* CSS by GenerateCSS.com */
+/* CSS by GenerateCSS.com */
+-webkit-border-radius: 10px 10px 10px 10px;
+border-radius: 10px 10px 10px 10px;
+/* CSS by GenerateCSS.com */
+/* CSS by GenerateCSS.com */
+-webkit-box-shadow: inset 0px 0px 0px 100px #ccd9f2;
+box-shadow: inset 100px 100px 100px 100px #ccd9f2;
+
+/* CSS by GenerateCSS.com */
+outline: 3px solid #000000;
+outline-offset: 0px;
+   text-align:center;
+   background: rgba(255,255,255,1);
+}
+
+#close {
+   float:right;
+   margin-right:5px;
+   cursor:pointer;
+   font:Verdana, Arial, Helvetica, sans-serif;
+   font-size:12px;
+   font-weight:bold;
+   color:#FFFFFF;
+   background-color:#666666;
+   width:12px;
+   position:relative;
+   margin-top:-1px;
+   text-align:center;
+}
+
+#textstyle
+{
+
+	/* CSS by GenerateCSS.com */
+font-family: Arial Black;
+color: #000000;
+font-size: 15px;
+letter-spacing: 0px;
+word-spacing: 0px;
+line-height: 0px;
+text-align: left;
+}

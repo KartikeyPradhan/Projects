@@ -1,0 +1,154 @@
+package com.edu.uic.cs581.algorithm;
+
+import com.edu.uic.cs581.beans.MyPojo;
+import com.edu.uic.cs581.beans.PojoObject;
+import com.edu.uic.cs581.beans.Rows;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+
+import com.edu.uic.cs581.beans.Coordinates;
+import com.edu.uic.cs581.beans.DataSet;
+import com.edu.uic.cs581.constants.ConstData;
+import com.edu.uic.cs581.database.SqliteConnection;
+import com.google.gson.Gson;
+
+public class CalculateForce {
+	
+	public ArrayList<DataSet> dataList; 
+	public DataSet distanceBased(Double lat,Double lon)
+	{
+		Statement stmt = null;
+		Connection con = null;
+		dataList = new ArrayList<DataSet>();
+		con = SqliteConnection.dbConnector();
+		try {
+			stmt = con.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String date = "\"%" + new SimpleDateFormat("hh:mm").format(new Date()) + "%\"";
+		
+		String availability = "SELECT distinct "
+								+ "dp.available available, "
+								+ "(spe.latitude_1 + spe.latitude_2)/2 latitude, "
+								+ "(spe.longitude_1 + spe.longitude_2)/2 longitude "
+								+ "FROM dbprojection dp, sf_park_edge spe "
+								+ "where available > 0 "
+								+ "and dp.block_id = spe.block_id "
+								+ "and dateandtime like " + date
+								+ " order by available desc ";
+		
+		try {
+			//System.out.println("Query: "+availability);
+			ResultSet rs = stmt.executeQuery(availability);
+			System.out.println("rs.next()"+rs.next());
+			Double startW = (double) System.currentTimeMillis();
+			int i=0;
+			double calculateOSMDist = 0.0;
+			while(rs.next())
+			{
+				DataSet ds = new DataSet();
+				ds.setAvailability(rs.getDouble("available"));
+				ds.setLatitude(rs.getDouble("latitude"));
+				ds.setLongitude(rs.getDouble("longitude"));
+				Double startD = (double) System.currentTimeMillis();
+				ds.setDistance(getAPIDistance(lat, lon, ds.getLatitude(), ds.getLongitude()));
+				Double endD = (double) System.currentTimeMillis();
+				//System.out.println("Time for distance: "+(endD-startD)/1000);
+				calculateOSMDist = calculateOSMDist +(endD-startD);
+				//System.out.println("Set Distance: "+ds.getDistance());
+				//Double startF = (double) System.currentTimeMillis();
+				ds.setForce(calculateForce(ds.getAvailability(), ds.getDistance()));
+				//Double endF = (double) System.currentTimeMillis();
+				//System.out.println("Time for force: "+(endF-startF)/1000);
+				dataList.add(ds);
+				i++;
+			}
+			Double endW = (double) System.currentTimeMillis();
+			System.out.println("Time for while: "+(endW-startW)/1000);
+			System.out.println("Time for calculating OSM distance: "+(calculateOSMDist/1000));
+			System.out.println("Number of records: "+i);
+			Collections.sort(dataList, new ForceComparator());
+			/*System.out.println("Size------>"+dataList.size());
+			System.out.println("Force:::::");
+			for(DataSet ds:dataList)
+			{
+				System.out.println(ds.getForce());
+			}*/
+		
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println("MaxForce: "+dataList.get(0).getForce());
+		return dataList.get(0);
+		
+		
+	}
+	
+	public Double getAPIDistance(Double currLat,Double currLon,Double destLat,Double destLon)
+	{
+		
+		String origin = currLat + "," + currLon;
+		String dest = destLat + "," + destLon;
+		Double distance = 0.0;
+		String urlString = "http://router.project-osrm.org/table?loc="+origin+"&loc="+dest;
+		URL url;
+		try {
+			url = new URL(urlString);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			String line, outputString = "";
+			BufferedReader reader = new BufferedReader(
+			new InputStreamReader(conn.getInputStream()));
+			while ((line = reader.readLine()) != null) {
+			     outputString += line;
+			}
+			Gson gson = new Gson();
+			PojoObject obj = gson.fromJson(outputString, PojoObject.class);
+
+			
+			//System.out.println(outputString);
+			//System.out.println("Distance: "+obj.getDistance());
+			
+			distance = Double.parseDouble(obj.getDistance());
+			//System.out.println("Distance:::::"+distance);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return distance;
+		
+	}
+	
+	public Double calculateForce(Double availability,Double distance)
+	{
+		Double force = availability/(distance*distance);
+		
+		return force;
+		
+	}
+	
+	
+	
+	
+
+}

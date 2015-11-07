@@ -1,0 +1,27 @@
+package com.edu.uic.cs581.database;
+import java.sql.*;
+
+import javax.swing.*;
+public class SqliteConnection {
+
+		Connection conn = null;
+		public static Connection dbConnector()
+		{
+			try{
+				String dir =  System.getProperty("user.dir");
+				dir = dir.replace("\\", "\\\\");
+				
+				Class.forName("org.sqlite.JDBC");
+				Connection conn = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\src\\SFParkDatabase.sqlite");
+				
+				// Prompt the user that the database connection is successful.
+								JOptionPane.showMessageDialog(null,"Database Connection: Successfulllllllll");
+				
+				return conn;
+			}catch(Exception e)
+			{
+				JOptionPane.showMessageDialog(null,e);
+				return null;
+			}
+		}
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Resource name="jdbc/sqlite"
+    type="javax.sql.DataSource"
+    driverClassName="org.sqlite.JDBC"
+    url="C:/MyFolder/StudyMaterial/Tomcat/apache-tomcat-8.0.18/dbs/SFParkDatabase.db"
+    />
+    
+    <Resource name="jdbc/sqlserv"
+    auth="Container"
+    driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+    type="javax.sql.DataSource"
+    username="jaydave"
+    password="jay12345"
+    url="jdbc:sqlserver://localhost;DatabaseName=SFPark;SelectMethod=cursor;"
+    maxActive="8"
+     /> 
+</Context>

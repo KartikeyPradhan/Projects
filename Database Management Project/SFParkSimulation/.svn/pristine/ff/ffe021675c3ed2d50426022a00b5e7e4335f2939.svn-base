@@ -1,0 +1,113 @@
+package com.edu.uic.cs581.algorithm;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.edu.uic.cs581.beans.DataSet;
+import com.edu.uic.cs581.beans.DistanceMap;
+import com.edu.uic.cs581.beans.Points;
+import com.edu.uic.cs581.constants.ConstData;
+import com.edu.uic.cs581.database.ExtractPoints;
+import com.edu.uic.cs581.database.Weight;
+import com.google.gson.Gson;
+
+/**
+ * Servlet implementation class InvokeAlgorithm
+ */
+//@WebServlet(description = "Invokes the routing algorithm", urlPatterns = { "/InvokeAlgorithm" })
+public class InvokeAlgorithm extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public InvokeAlgorithm() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//get all points on the route
+		//getAllPoints(request);
+		
+		//for testing purpose only
+		String end = getAllPoints(request);
+		
+		//System.out.println("terminateFlag: "+request.getParameter("terminateFlag"));
+		//writing the asynchro
+		
+		System.out.println("End::::"+end);
+		write(response, end);
+		
+		
+		
+	}
+	
+	/*
+	 * for writing the asynchronous response
+	 */
+	private void write(HttpServletResponse response, String end) throws IOException {
+		
+		//setting the content type and character encoding
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		
+		//writing the response to Json Object
+		response.getWriter().write(new Gson().toJson(end));
+		
+	}
+	
+	/*
+	 * getting all the co-ordinates on the path
+	 */
+	public String getAllPoints(HttpServletRequest request){
+		String endPoint = "";
+		String intersectionPoints = "";
+		Double intersectionLat = 0.0;
+		Double intersectionLong = 0.0;
+		String splitString[];
+		System.out.println("co-od: "+request.getParameter("getPoints"));
+		if(request.getParameter("getPoints")!=null || request.getParameter("getPoints")!="undefined")
+		{
+			intersectionPoints = request.getParameter("getPoints");
+			splitString = intersectionPoints.split(",");
+			
+			intersectionLat = Double.parseDouble(splitString[0].replace("(","").trim());
+			intersectionLong = Double.parseDouble(splitString[1].replace(")","").trim());
+
+			DistanceMap distanceMap = new Weight().pointWeight(intersectionLat,intersectionLong, ExtractPoints.point);
+			System.out.println("distanceMap.getDist(): "+distanceMap.getDist());
+			if(distanceMap.getDist() < ConstData.INTERSECTION_THRESHOLD)
+			{
+				System.out.println("inside iffffffffffffffffffffffffff");
+				System.out.println("OBJjjjjjjjjjjjj: "+new CalculateForce().distanceBased(intersectionLat,intersectionLong));
+				DataSet ds = new CalculateForce().distanceBased(intersectionLat,intersectionLong);
+				endPoint = ds.getLatitude() + "," + ds.getLongitude();
+				System.out.println("latlong: "+endPoint);
+			}
+			
+		}
+		//System.out.println("EndPoint::::"+endPoint);
+		return endPoint; 
+	}
+
+	
+
+}

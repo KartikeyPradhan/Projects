@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Draggable directions</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+    <script type="text/javascript" src="DirectionDisplay.js"/>
+
+  </head>
+  <body>
+    <div id="map-canvas" style="float:left;width:70%; height:100%"></div>
+    <div id="directionsPanel" style="float:right;width:30%;height 100%">
+		<p>Total Distance: <span id="total"></span></p>
+		<p>Total Time: <span id="time"></span></p>
+    </div>
+	<input type = "button" value="Navigate" onclick = "movementSimulator()">
+	Time Taken: <span id = "timeTaken"></span>
+  </body>
+</html>
+
+

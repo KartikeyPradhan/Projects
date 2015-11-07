@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>SF Park Routing</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+      form {
+    	display: inline;
+    	padding: 0px;
+    	spacing: 0px;
+	}
+    </style>
+    <script src="js/jquery-1.11.2.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+    <script>
+
+		//for dragging origin and destinations
+		var rendererOptions = {
+		  draggable: true
+		};
+		
+		//for direction display and routing
+		var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
+		var directionsService = new google.maps.DirectionsService();
+		
+		//declaring the map
+		var map;
+		
+		//declaring the polyline
+		var line;
+		
+		//initializing origin and destination (some default value)
+		var start = new google.maps.LatLng(37.8057372800,-122.4120841000);
+		var end = new google.maps.LatLng(37.8070850900,-122.4156488000);
+		
+		//setting the center of the map 
+		var centerMap = new google.maps.LatLng(37.8054164152, -122.4236028968);
+		
+		//for building the polyline path
+		var lineCoordinates = [start,end];
+		
+		//for clearing the interval
+		var clrInterval;
+		
+		//start time
+		var startTime;
+
+		//
+		var isTerminate;
+		
+		var move = 0;
+		
+		//called when page loads
+		function initialize() {
+
+		  //for setting up map attributes
+		  var mapOptions = {
+			zoom: 20,
+			center: centerMap
+		  };
+		  
+		  //initializing the map
+		  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);		  
+		  
+		  //listener called when car route changes
+		  google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+			computeTotalDistance(directionsDisplay.getDirections());
+		  });
+		  
+			  
+		  //setting the route on map
+		  directionsDisplay.setMap(map);
+		  
+		  //for displaying the route direction panel
+		  directionsDisplay.setPanel(document.getElementById('directionsPanel'));
+		  
+		  //calculating the route
+		  calcRoute(start,end);
+		  
+		}
+		
+		
+		/*method for calculating the route*/
+		function calcRoute(start,end) {
+			var request = {
+				origin: start,
+				destination: end,
+				travelMode: google.maps.TravelMode.DRIVING
+			  };
+			  directionsService.route(request, function(response, status) {
+				if (status == google.maps.DirectionsStatus.OK) { 
+				  directionsDisplay.setDirections(response);
+				}
+			  });
+		}
+		
+		/*method for updating the new route*/
+		function calcNewRoute(start,end) {	
+			//alert("calcNewRoute");
+			var requestNew = {
+				origin: start,
+				destination: end,
+				travelMode: google.maps.TravelMode.DRIVING
+			  };
+			directionsService.route(requestNew,function(response, status,statusCheck) {
+			  if (status == google.maps.DirectionsStatus.OK) {
+				  directionsDisplay.setDirections(response);
+				  movementSimulator();
+			  }
+			});
+		}
+
+		
+		/*method for calculating the distance and time*/
+		function computeTotalDistance(result) {
+		  //getting all the co-ordinates for building the polyline path 
+		  lineCoordinates = getAllPoints(result);
+
+		 //displaying total distance
+		  document.getElementById('total').innerHTML = result.routes[0].legs[0].distance.value/1000.0 + ' km';
+		  
+		  //displaying total time
+		  document.getElementById('time').innerHTML = result.routes[0].legs[0].duration.value + ' seconds';
+		}
+		
+		function initiateMovement(){
+			calcRoute(start,end);
+			startTime = performance.now();
+			isTerminate = "CONTINUE";
+			document.getElementById("start").innerHTML = start;
+			movementSimulator();
+		}
+
+		
+		/*to simulate movement*/
+		function movementSimulator() {
+		   
+		
+			
+		   //initializing the polyline
+		   line = new google.maps.Polyline({
+				path: lineCoordinates,
+				map: map,
+				strokeColor: '#FF0000',
+				strokeOpacity: 0.00001,
+				strokeWeight: 0
+		    });
+			
+			
+			//for testing purpose only
+			//var test = "(37.80543, -122.41527)";
+			
+			//for displaying markers at intervals to simulate movement
+			clrInterval = window.setInterval(function() {	
+				move = 0;
+				if(move<line.getPath().getArray().length && isTerminate == "CONTINUE"){
+
+					start = line.getPath().getArray()[move+1];
+					/* alert("arr: "+line.getPath().getArray());
+					alert(start);*/
+					//alert("len: "+line.getPath().getArray().length);
+					if(line.getPath().getArray().length!=2 && isTerminate == "CONTINUE")
+					{
+						document.getElementById("getPoints").value = start;
+						document.getElementById("getDest").value = end;
+						document.getElementById('invokeAlgo').click();
+						isTerminate = "TERMINATE";
+					}else{
+						//alert("else");
+						start = end;
+						//alert("start: "+start);
+						//alert("end: "+end);
+						document.getElementById("end").innerHTML = end;
+						isTerminate = "TERMINATE";
+						var endTime = performance.now();
+						var timeElapsed = (endTime - startTime)/1000.0;
+						document.getElementById("totalTimeTaken").innerHTML = "Slot acquired in " + timeElapsed + " seconds";
+					}
+
+					/* alert("end b: "+end);
+					end = line.getPath().getArray()[line.getPath().getArray().length-1];
+					alert("end a: "+end); */
+					calcRoute(start,end);
+					/* if(start == end)
+					{
+						document.getElementById("end").innerHTML = end;
+						isTerminate = "TERMINATE";
+						var endTime = performance.now();
+						var timeElapsed = (endTime - startTime)/1000.0;
+						document.getElementById("totalTimeTaken").innerHTML = "Slot acquired in " + timeElapsed + " seconds";
+						//document.getElementById("terminate").value = isTerminate;
+						//document.getElementById('stopAlgo').click();
+					} */
+					move++;	
+				}
+			}, 3000);			
+		}
+		
+		/*method for getting all the points on the polyline path*/
+		function getAllPoints(result)
+		{
+			var route = result.routes[0];
+			var points = new Array();
+			var legs = route.legs;
+			for (i = 0; i < legs.length; i++) {
+				var steps = legs[i].steps;
+				for (j = 0; j < steps.length; j++) {
+					var nextSegment = steps[j].path;
+					for (k = 0; k < nextSegment.length; k++) {
+						points.push(nextSegment[k]);
+					}
+				}
+			}
+			return points;
+		}
+		
+		
+		/*for making an AJAX call*/
+		$(document).ready(function(){
+			$('#invokeAlgo').click(function(){
+				$.ajax({
+					url: 'InvokeAlgorithm',
+					type: 'POST',
+					datatype: 'json',
+					data: {
+						getPoints : $('#getPoints').val(),
+						getDest : $('#getDest').val(),
+		            },
+					success: function(response){
+						//setting the endpoint co-ordinate
+						//alert("started");
+						
+						
+						if(response != "")
+							end = response;
+						
+						//alert("end--->"+end);
+						document.getElementById("routeTo").innerHTML = end;
+						//clearing the current excuting timer
+						clearInterval(clrInterval);
+						
+						isTerminate = "CONTINUE";
+						//routing the user to the new route
+						calcNewRoute(start,end);
+
+						
+						
+					}
+				});
+				return false
+			});
+			
+			/* $('#stopAlgo').click(function(){
+				$.ajax({
+					url: 'TerminateAlgorithm',
+					type: 'POST',
+					datatype: 'json',
+					data: {
+						startTime : startTime
+		            },
+					success: function(response){
+						var endTime = performance.now();
+						var timeElapsed = (endTime - startTime)/1000.0;
+						document.getElementById("totalTimeTaken").innerHTML = "Parkinng acquired in" + timeElapsed + " seconds";
+						//clearing the current excuting timer
+						clearInterval(clrInterval);
+						
+						//alert(response + timeElapsed + "seconds");
+						
+					}
+				});
+				return false
+			}); */
+		});
+		
+		
+		
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <form method="post">
+	  <body>
+	  	<%System.out.println("On page"); %>
+	    <div id="map-canvas" style="float:left;width:70%; height:100%"></div>
+	    <div id="directionsPanel" style="float:right;width:30%;height: 100%">
+			<p>Total Distance: <span id="total"></span></p><br>
+			<p>Total Time: <span id="time"></span></p>
+	    </div>
+		<input type = "button" id= "Navigate" value="Navigate" onclick = "initiateMovement()">
+		Time Taken: <span id = "timeTaken"></span><br>
+		
+		<!-- For testing purpose -->
+		<!-- Points: <span id = "points" name="points"></span><br>
+		<input type = "hidden" id="getPoints" name="getPoints" value="test"></input> -->
+		
+		<input type = "hidden" id="getPoints" name="getPoints" value="test"></input>
+		<!-- <input type = "hidden" id="terminate" name="getPoints" value="CONTINUE"></input> -->
+		<input type = "hidden" id="getDest" name="getDest" value="test"></input>
+		
+		
+		<input type="submit" id="invokeAlgo" style="display: none;" value="test" onclick="InvokeAlgorithm"/> 
+		<input type="submit" id="stopAlgo" style="display: none;" onclick = "TerminateAlgorithm"/>
+		
+		<!-- <input type="text" id="start" value = "test"/>
+		<input type="text" id="end" value = "test"/><br><br -->
+		
+		
+		Routed Location: <br>
+		<span id="routeTo"></span><br>
+		
+		Start Location: <br>
+		<span id="start"></span><br>
+		End Location: <br>
+		<span id="end"></span><br>
+		<span id="totalTimeTaken"></span>
+ 		
+
+	  </body>
+  </form>
+</html>
+
+

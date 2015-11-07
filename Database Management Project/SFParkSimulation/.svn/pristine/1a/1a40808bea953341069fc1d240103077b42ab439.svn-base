@@ -1,0 +1,31 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Home</title>
+	</head>
+	<form method="post" action="index1.jsp">
+		<body>
+			<div id="text">Start Location</div>
+			<input type="text" name="start" id="start"/>
+			<br />
+			<br />
+			<div id="text">End Location</div>
+			<input type="text" name="end" id="end"/>
+			<br />
+			<br />
+			<!-- <div id="text">Select Algorithm</div> -->
+			<select>
+				<option>Select Algorithm</option>
+				<option>Distance Based Gravitational Force</option>
+				<option>Cost Based Gravitational Force</option>
+				<option>Greedy Algorithm</option>
+			</select>
+			<input type="submit" name="submitBtn" id ="submitBtn" value = "Navigate" onclick = "index1.jsp"/>
+		
+		</body>
+	</form>
+</html>

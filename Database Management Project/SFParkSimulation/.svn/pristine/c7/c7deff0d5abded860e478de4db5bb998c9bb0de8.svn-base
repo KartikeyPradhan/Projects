@@ -1,0 +1,301 @@
+package com.edu.uic.cs581.algorithm;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.naming.InitialContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
+import com.edu.uic.cs581.beans.DataSet;
+import com.edu.uic.cs581.beans.DistanceMap;
+import com.edu.uic.cs581.beans.Points;
+import com.edu.uic.cs581.constants.ConstData;
+import com.edu.uic.cs581.database.ExtractPoints;
+import com.edu.uic.cs581.database.ParkingExtractPoints;
+import com.edu.uic.cs581.database.Weight;
+import com.google.gson.Gson;
+
+/**
+ * Servlet implementation class InvokeAlgorithm
+ */
+//@WebServlet(description = "Invokes the routing algorithm", urlPatterns = { "/InvokeAlgorithm" })
+public class InvokeAlgorithm extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public InvokeAlgorithm() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//get all points on the route
+		//getAllPoints(request);
+		
+		//for testing purpose only
+		String end = "";
+		String finalDest = "";
+		String intersection = "";
+		String destination = request.getParameter("getDest");
+		System.out.println("start: "+request.getParameter("getPoints"));
+		System.out.println("end: "+destination);
+		if(request.getParameter("getPoints")!=null || request.getParameter("getPoints")!="undefined")
+		{
+			intersection = checkIntersection(request);
+			/*if(!intersection.equalsIgnoreCase(""))
+				end = getDestination(intersection);*/
+			if(!intersection.equalsIgnoreCase("")){
+				if(destination != null || destination!="undefined"){
+					end = costBasedForce(intersection, destination);
+				}
+			}
+			
+		}
+	
+		
+		System.out.println("Routed Point::::"+end);
+		write(response, end);
+		
+		
+		
+	}
+	
+	/*
+	 * for writing the asynchronous response
+	 */
+	private void write(HttpServletResponse response, String end) throws IOException {
+		
+		//setting the content type and character encoding
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		
+		//writing the response to Json Object
+		response.getWriter().write(new Gson().toJson(end));
+		
+	}
+	
+	/*
+	 * getting all the co-ordinates on the path
+	 */
+	public String checkIntersection(HttpServletRequest request){
+		
+		String interSection = "";
+			
+			String intersectionPoints = request.getParameter("getPoints");
+			String splitString[] = intersectionPoints.split(",");
+			
+			Double intersectionLat = Double.parseDouble(splitString[0].replace("(","").trim());
+			Double intersectionLong = Double.parseDouble(splitString[1].replace(")","").trim());
+									
+			DistanceMap distanceMap = new Weight().pointWeight(intersectionLat,intersectionLong, ExtractPoints.point);
+			System.out.println("distanceMap.getDist(): "+distanceMap.getDist());
+			if(distanceMap.getDist() < ConstData.INTERSECTION_THRESHOLD)
+			{
+				System.out.println("inside iffffffffffffffffffffffffff");
+				interSection = distanceMap.getPoint().getLatitude() + "," + distanceMap.getPoint().getLongitude();
+				System.out.println("interSection: "+interSection);
+				
+			}	
+		return interSection;
+	
+	}
+	
+	/*
+	 * getting all the parking slots
+	 */
+	public String checkBlockMidPoint(Double lat,Double lon){
+		
+		
+			String finalDestination = "";									
+			DistanceMap distanceMap = new Weight().pointWeight(lat,lon, ParkingExtractPoints.midPoint);
+			System.out.println("distanceMap.getDist(): "+distanceMap.getDist());
+			if(distanceMap.getDist() < ConstData.INTERSECTION_THRESHOLD)
+			{
+				System.out.println("inside iffffffffffffffffffffffffff");
+				finalDestination = distanceMap.getPoint().getLatitude() + "," + distanceMap.getPoint().getLongitude();
+				System.out.println("finalDestination: "+finalDestination);
+				
+			}	
+		return finalDestination;
+	
+	}
+	
+	public String getDestination(String end){
+		
+		
+		String splitString[] = end.split(",");
+		
+		Double intersectionLat = Double.parseDouble(splitString[0].replace("(","").trim());
+		Double intersectionLong = Double.parseDouble(splitString[1].replace(")","").trim());
+		String destLoc = ""; 
+		String date = new SimpleDateFormat(ConstData.DATE_FROMAT).format(new Date());
+		String destinationQuery = "select aa.block_id, aa.available, aa.distance,aa.block_latitude destination_latitude,aa.block_longitude destination_longitude, aa.GForce FROM " + 
+				 "(select a.block_id, a.available, a.distance,a.block_latitude,a.block_longitude, (a.available *10000000/(a.distance*a.distance)) as GForce, " +
+				 "row_number() over ( order by (a.available *10000000/(a.distance*a.distance)) desc ) as RowNum1 " +
+				 "from( " +
+				 "SELECT a.block_id, a.available, b.distance,b.block_latitude,b.block_longitude, row_number() over ( partition by a.block_id order by DATEANDTIME desc ) as RowNum " +
+				 "FROM dbprojection a JOIN distance b " +
+				 "ON a.block_id = b.block_id " + 
+				 "where DATEANDTIME < '" + date + "' and available <> 0 and " + 
+				 "intersection_latitude =" + intersectionLat + " and " +
+				 "intersection_longitude = " + intersectionLong + 
+				 ") a " + 
+				 "where RowNum = 1 " + 
+				 ") aa " + 
+				 "where RowNum1 = 1";
+		
+		System.out.println("destinationQuery: "+destinationQuery);
+		
+		Connection connection = null;
+		Statement statement = null;
+		try {
+			InitialContext ic = new InitialContext();
+			DataSource ds = (DataSource) ic.lookup("java:comp/env/jdbc/sqlserv");
+			connection = ds.getConnection();
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(destinationQuery);
+			System.out.println("Resultset: "+rs.getFetchSize());
+			//System.out.println("rs.next(): "+rs.next());
+			int  i = 0;
+			while(rs.next())
+			{
+				destLoc = rs.getDouble("destination_latitude") + "," + rs.getDouble("destination_longitude");
+				System.out.println("destLoc: "+destLoc);
+				i++;
+			}
+			System.out.println("iiiiiiiiiiii: "+i);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("destLocrrrrrr: "+destLoc);
+		return destLoc;
+		
+	}
+	
+	public String costBasedForce(String start,String dest)
+	{
+		Connection connection = null;
+		String finalLocation = "";
+		String startSplit[] = start.split(",");
+		String destSplit[] = dest.split(",");
+		
+		Double startLat = Double.parseDouble(startSplit[0]);
+		Double startLong = Double.parseDouble(startSplit[1]);
+		
+		
+		Double destLat = Double.parseDouble(destSplit[0].replace("(","").trim());
+		Double destLong = Double.parseDouble(destSplit[1].replace(")","").trim());
+		
+		String destination = checkBlockMidPoint(destLat, destLong);
+		System.out.println("destination: "+ destination);
+		destLat = Double.parseDouble(destination.split(",")[0]);
+		destLong = Double.parseDouble(destination.split(",")[1]);
+		
+		String date = new SimpleDateFormat(ConstData.DATE_FROMAT).format(new Date());
+		date = date.replace("2015", "2012");
+		System.out.println("Date: "+date);
+		
+		String query = "select " +
+				   "aaa.Parking_block_latitude final_lat, aaa.Parking_block_longitude final_long " +
+				    "from " +
+					"( " +
+					"select walking.Parking_block_id,walking.Parking_block_latitude as Parking_block_latitude,walking.Parking_block_longitude as Parking_block_longitude, " +
+						"walking.Dest_block_id,walking.Dest_block_latitude,walking.Dest_block_longitude, walking.Time " +
+					", driving.available, driving.driving_time as driving_time  " +
+					",(driving.available * 10000000/((driving.driving_time+walking.Time)*(driving.driving_time+walking.Time))) as GForce " +
+					",row_number() over ( order by (driving.available * 10000000/((driving.driving_time+walking.Time)*(driving.driving_time+walking.Time))) desc ) as RowNum1 " +
+					"FROM " +
+							"(select  " +
+								"a.block_id, a.available, a.time as driving_time, " +
+								"a.block_latitude,a.block_longitude, " +
+								"intersection_latitude,intersection_longitude " +
+								"from( " +
+										"SELECT a.block_id, a.available, b.time,b.block_latitude,b.block_longitude, " +
+										"intersection_latitude,intersection_longitude, " +
+										"row_number() over ( partition by a.block_id order by DATEANDTIME desc ) as RowNum " +
+										"FROM dbprojection a JOIN distance b  " +
+										"ON a.block_id = b.block_id  " +
+										"where DATEANDTIME < '"+date+"' and available <> 0 and " +
+										"intersection_latitude ="+startLat+" and intersection_longitude ="+ startLong +
+								") a " +
+							"where RowNum = 1 " +
+							") as driving " +
+					"INNER JOIN " + 
+					"( " +
+					"select * from WalkingTime " + 
+					"where Dest_block_latitude = "+destLat+" and Dest_block_longitude ="+destLong +
+					") as walking " +
+					"ON driving.block_id = walking.Parking_block_id " +
+			    ") aaa " +
+				"where RowNum1 = 1 ";
+		
+		System.out.println("Query::::"+query);
+		try {
+			
+			InitialContext ic = new InitialContext();
+			System.out.println("ic:"+ic);
+			DataSource ds = (DataSource) ic.lookup("java:comp/env/jdbc/sqlserv");
+			System.out.println("ds: "+ds);
+			connection = ds.getConnection();
+			System.out.println("connection: "+connection);
+			Statement statement = connection.createStatement();
+			System.out.println("statement: "+statement);
+			ResultSet rs = statement.executeQuery(query);
+			System.out.println("rs: "+rs);
+
+			int  i = 0;
+			while(rs.next())
+			{
+				System.out.println("inside while: ");
+				finalLocation = rs.getDouble("final_lat") + "," + rs.getDouble("final_long");
+				System.out.println("finalLocation: "+finalLocation);
+				i++;
+			}
+			System.out.println("iiiiiiiiiiii: "+i);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("finalLocation: "+finalLocation);
+		return finalLocation;
+	}
+
+	
+
+}

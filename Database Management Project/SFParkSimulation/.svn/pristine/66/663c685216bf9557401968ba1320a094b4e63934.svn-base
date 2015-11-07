@@ -1,0 +1,21 @@
+package com.edu.uic.cs581.algorithm;
+
+import java.util.Comparator;
+
+import com.edu.uic.cs581.beans.DataSet;
+
+public class ForceComparator implements Comparator<DataSet> {
+
+	@Override
+	public int compare(DataSet arg0, DataSet arg1) {
+		// TODO Auto-generated method stub
+		if(arg1.getForce() > arg0.getForce())
+			return 1;
+		else if(arg1.getForce() < arg0.getForce())
+			return -1;
+		else
+			return 0;
+			
+	}
+
+}
