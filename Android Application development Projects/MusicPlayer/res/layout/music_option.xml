@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/pause"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="Pause" />
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/pause"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/pause"
+        android:text="Stop" />
+
+    <Button
+        android:id="@+id/resume"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/stop"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/stop"
+        android:text="Resume" />
+
+    <Button
+        android:id="@+id/history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/resume"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/resume"
+        android:text="Get History" />
+
+</RelativeLayout>

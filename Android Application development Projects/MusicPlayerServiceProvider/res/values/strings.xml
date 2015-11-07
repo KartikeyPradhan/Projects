@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MusicPlayerServiceProvider</string>
+    
+        <string-array name = "songList">
+        <item>Locked out of Heaven</item>
+        <item>Dont you worry Child</item>
+        <item>Tonight we are young</item>
+        <item>Unconditionally</item>
+    </string-array>
+    
+        
+</resources>

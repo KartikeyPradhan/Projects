@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+    <fragment
+        android:id="@+id/songList"
+        android:name = "edu.uic.cs478.KartikeyPradhan.SongList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight = "14" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/playSong"
+        android:name = "edu.uic.cs478.KartikeyPradhan.MusicOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_weight = "1">
+    </fragment>
+
+</LinearLayout>
+
