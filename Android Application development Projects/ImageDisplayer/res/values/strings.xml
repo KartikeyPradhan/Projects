@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">Image Displayer</string>
+    
+    <string-array name="category">
+        <item>Cars</item>
+        <item>Flowers</item>
+        <item>Animals</item>
+    </string-array>
+    
+    <string-array name="animals">
+         
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/amazing-german-shepherd-high-definition-wallpaper-for-desktop-background-download-german-shepherd-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/beautiful-white-german-shepherd-dog-animal-high-definition-wallpaper-for-desktop-background-download-german-shepherd-images.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/german-shepherd-animal-dog-widescreen-high-resolution-wallpaper-for-desktop-background-download-german-shepherd-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/beautiful-german-shepherd-dog-wide-hd-wallpaper.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/beautiful-puppy-german-shepherd-widescreen-hd-wallpaper.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/dog-german-shepherd-on-the-mountains-high-resolution-wallpaper-for-desktop-background-download-german-shepherd-images-free.jpg</item>
+        
+    </string-array>
+    
+    <string-array name="cars">
+        
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/beautiful-white-colour-porsche-cayman-high-resolution-wallpaper-download-porsche-cayman-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/light-green-porsche-cayman-car-high-resolution-wallpaper-download-porsche-cayman-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/beautiful-porsche-cayman-car-wide-hd-wallpaper-download-porsche-cayman-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/porsche-cayman-full-hd-wallpaper-download-porsche-cayman-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/porsche-cayman-racer-car-widescreen-high-resolution-wallpaper-download-porsche-cayman-images.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/porsche-cayman-high-resolution-wallpaper-download-porsche-cayman-images-free.jpg</item>
+      
+    </string-array>
+
+    <string-array name="flowers">
+  
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/blue-flower-and-blue-butterfly-widescreen-high-resolution-wallpaper-for-desktop-background-download-blue-flower-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/beautiful-blue-flower-widescreen-high-resolution-wallpaper-download-blue-flower-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/blue-flower-desktop-background-high-resolution-wallpaper-download-blue-flower-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/blue-flower-high-definition-wallpaper-for-desktop-download-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/blue-flower-high-resolution-wallpaper-download-blue-flower-images-free.jpg</item>
+        <item>http://www.hdwallpaperscool.com/wp-content/uploads/2015/03/blue-flower-wide-hd-wallpaper-download-blue-flower-images-free.jpg</item>
+      
+    </string-array>
+
+</resources>
