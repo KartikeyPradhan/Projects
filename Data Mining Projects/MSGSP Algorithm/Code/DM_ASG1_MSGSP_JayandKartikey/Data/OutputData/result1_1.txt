@@ -1,0 +1,18 @@
+The number of length 1 sequential patterns is 6
+Pattern: <{80}>  Count: 3
+Pattern: <{20}>  Count: 2
+Pattern: <{70}>  Count: 3
+Pattern: <{100}>  Count: 2
+Pattern: <{10}>  Count: 2
+Pattern: <{30}>  Count: 2
+
+The number of length 2 sequential patterns is 5
+Pattern: <{80, 100}>  Count: 2
+Pattern: <{20}, {80}>  Count: 2
+Pattern: <{20}, {100}>  Count: 2
+Pattern: <{70, 80}>  Count: 2
+Pattern: <{30}, {70}>  Count: 2
+
+The number of length 3 sequential patterns is 1
+Pattern: <{20}, {80, 100}>  Count: 2
+
