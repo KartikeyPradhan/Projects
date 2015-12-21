@@ -20,6 +20,15 @@ This is entirely a class project and not to be used for anything other than clas
 
 #Instruction for running application
 
+##Download/Installation:
+
+1. Clone the folder “Folder_Visualization” from github link:
+      https://github.com/cs522fall2015/CS522_Fall2015
+2. Download Node.js or any equivalent server if not available in user machine.
+3. Install Node.js from terminal/command prompt.
+4. Start the server by typing http-server and click enter.
+5. Open the browser and go to localhost:8080/index.html.
+
 ##File Description:
 
 index.html → Project HTML file.
@@ -35,12 +44,3 @@ Google Chart →A Flash based Google API to develop interactive motion charts an
 Angular.js → javascript library to achieve dynamic data binding and manipulate DOM elements.
 jquery → javascript library to handle user inputs, animations and combine with css to provide good UI.
 Bootstrap CSS → CSS framework to achieve consistency and responsive screen design and layout.
-
-##Download/Installation:
-
-1. Clone the folder “Folder_Visualization” from github link:
-      https://github.com/cs522fall2015/CS522_Fall2015
-2. Download Node.js or any equivalent server if not available in user machine.
-3. Install Node.js from terminal/command prompt.
-4. Start the server by typing http-server and click enter.
-5. Open the browser and go to localhost:8080/index.html.
