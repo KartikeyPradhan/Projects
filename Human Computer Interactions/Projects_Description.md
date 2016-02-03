@@ -23,7 +23,7 @@ This is entirely a class project and not to be used for anything other than clas
 ##Download/Installation:
 
 1. Clone the folder “Folder_Visualization” from github link:
-      https://github.com/cs522fall2015/CS522_Fall2015
+      https://github.com/KartikeyPradhan/Projects/tree/master/Human%20Computer%20Interactions
 2. Download Node.js or any equivalent server if not available in user machine.
 3. Install Node.js from terminal/command prompt.
 4. Start the server by typing http-server and click enter.
